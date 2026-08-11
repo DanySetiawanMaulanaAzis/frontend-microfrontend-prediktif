@@ -1,0 +1,91 @@
+.smart-prioritization-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.line-filter {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.line-btn {
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.line-btn:hover {
+    background: #f3f4f6;
+}
+
+.line-btn.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.smart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.smart-table thead {
+    background: #f9fafb;
+}
+
+.smart-table th,
+.smart-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.smart-table th {
+    font-weight: 600;
+    color: #374151;
+}
+
+.smart-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.action-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.action-btn:hover {
+    background: #1d4ed8;
+}
