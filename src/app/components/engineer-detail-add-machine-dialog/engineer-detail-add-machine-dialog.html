@@ -1,0 +1,74 @@
+<!-- Header Dialog -->
+<div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-slate-100">
+  <h2 mat-dialog-title class="!m-0 !p-0 text-xl font-semibold text-slate-800 tracking-tight">
+    Tambah Mesin Baru
+  </h2>
+  <button 
+    type="button" 
+    (click)="onCancel()" 
+    class="text-slate-400 hover:text-slate-600 transition-colors rounded-lg p-1 hover:bg-slate-100">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+</div>
+
+<!-- Content Dialog / Form -->
+<mat-dialog-content class="!px-6 !py-5 min-w-[320px] sm:min-w-[420px]">
+  <form [formGroup]="machineForm" (ngSubmit)="onSubmit()" id="machineForm" class="flex flex-col gap-1 mt-1">
+    
+    <!-- Nama Mesin -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nama Mesin</mat-label>
+      <input matInput formControlName="machineName" placeholder="Contoh: Machine 01" />
+      @if (machineForm.get('machineName')?.hasError('required')) {
+        <mat-error>Nama mesin wajib diisi</mat-error>
+      }
+      @if (machineForm.get('machineName')?.hasError('minlength')) {
+        <mat-error>Nama mesin minimal 3 karakter</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Lokasi / Lini -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Lokasi / Lini</mat-label>
+      <input matInput formControlName="location" placeholder="Contoh: Lini A" />
+      @if (machineForm.get('location')?.hasError('required')) {
+        <mat-error>Lokasi wajib diisi</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Tahun Produksi -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tahun Produksi</mat-label>
+      <input matInput type="number" formControlName="productionYear" placeholder="2026" />
+      @if (machineForm.get('productionYear')?.hasError('required')) {
+        <mat-error>Tahun produksi wajib diisi</mat-error>
+      }
+      @if (machineForm.get('productionYear')?.hasError('min')) {
+        <mat-error>Tahun produksi tidak valid</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<!-- Actions Dialog -->
+<mat-dialog-actions align="end" class="!px-6 !py-4 border-t border-slate-100 !m-0 gap-3 bg-slate-50/50">
+  <button 
+    mat-button 
+    type="button" 
+    (click)="onCancel()"
+    class="!rounded-lg !px-4 !py-2 !text-slate-600 hover:!bg-slate-200/60 font-medium transition-all">
+    Batal
+  </button>
+
+  <button 
+    mat-raised-button 
+    color="primary" 
+    type="submit" 
+    form="machineForm"
+    class="!rounded-lg !px-5 !py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-medium shadow-sm hover:shadow transition-all">
+    Simpan
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,138 @@
+@if (isLoading()) {
+  <div class="loading-spinner">Memuat data mesin...</div>
+} @else if (machineDetail(); as detail) {
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <h1>{{ detail.machineName }} ({{ detail.location }})</h1>
+      </div>
+    </div>
+
+    <!-- Layout Grid Utama (2 Row) -->
+    <div class="dashboard-grid">
+      <!-- Row 1 -->
+      <div class="grid-row-top">
+        <!-- Card 1: Detail Ringkasan Mesin (Skor Kesehatan Aset) -->
+        <div class="card card-grid">
+          <!-- Inner Row 1: Header (Grid 3 Row) -->
+          <div class="card-header card-header-grid">
+            <!-- Header Row 1: Judul -->
+            <div class="header-title">
+              <h3>Skor Kesehatan Aset</h3>
+            </div>
+            <!-- Header Row 2: Nilai Persentase -->
+            <div class="header-value">
+              <span>{{ detail.ahs }}%</span>
+            </div>
+            <!-- Header Row 3: Status Badge -->
+            <div class="header-status">
+              <span
+                class="status-badge"
+                [ngClass]="{
+                  'status-routine': detail.statusName.toLowerCase() === 'routine',
+                  'status-minor': detail.statusName.toLowerCase() === 'minor',
+                  'status-major': detail.statusName.toLowerCase() === 'major',
+                  'status-critical': detail.statusName.toLowerCase() === 'critical',
+                }"
+                >{{ detail.statusName }}</span
+              >
+            </div>
+          </div>
+
+          <!-- Inner Row 2: Content (Grid 2 Row dengan 4 Border Box) -->
+          <div class="card-content card-content-grid">
+            <!-- Content Row 1 -->
+            <div class="content-row">
+              <div class="info-box">
+                <span class="box-label">Tahun Produksi</span>
+                <span class="box-value">{{ detail.productionYear }}</span>
+              </div>
+              <div class="info-box">
+                <span class="box-label">Jam Operasional</span>
+                <span class="box-value">{{ detail.operationHours }} Jam</span>
+              </div>
+            </div>
+
+            <!-- Content Row 2 -->
+            <div class="content-row">
+              <div class="info-box">
+                <span class="box-label">Jam Downtime</span>
+                <span class="box-value">{{ detail.downtimeHours }} Jam</span>
+              </div>
+              <div class="info-box">
+                <span class="box-label">Hari Sejak Servis</span>
+                <span class="box-value">30 Hari</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Ringkasan Tren AHS -->
+        <div class="card card-grid-trend">
+          <!-- Inner Row 1: Header (Judul Ringkasan Tren AHS) -->
+          <div class="card-header">
+            <h3>Ringkasan Tren AHS</h3>
+          </div>
+
+          <!-- Inner Row 2: Content (Grid 1 Row, 3 Column) -->
+          <div class="card-content">
+            <div class="trend-grid">
+              <!-- Column 1: 7 Hari Terakhir -->
+              <div class="trend-column">
+                <div class="trend-header">7 Hari Terakhir</div>
+                <div class="trend-delta negative">-5</div>
+                <div class="trend-range">37% &rarr; 32%</div>
+              </div>
+
+              <!-- Column 2: 30 Hari Terakhir -->
+              <div class="trend-column">
+                <div class="trend-header">30 Hari Terakhir</div>
+                <div class="trend-delta negative">-15</div>
+                <div class="trend-range">47% &rarr; 32%</div>
+              </div>
+
+              <!-- Column 3: 90 Hari Terakhir -->
+              <div class="trend-column">
+                <div class="trend-header">90 Hari Terakhir</div>
+                <div class="trend-delta negative">-42</div>
+                <div class="trend-range">74% &rarr; 32%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inner Row 3: Seksi Titik Perubahan Skor -->
+          <div class="score-change-section">
+            <!-- Sub-Header Row -->
+            <div class="score-change-header">
+              <h4>Titik Perubahan Skor</h4>
+            </div>
+
+            <!-- List Notifikasi: Grid 3 Row Menurun ke Bawah -->
+            <div class="score-change-list">
+              <!-- Row 1 Notifikasi -->
+              <div class="score-change-item">
+                <span class="event-date">7 Aug</span>
+                <span class="event-desc">Downtime gangguan</span>
+                <span class="event-score">37% &rarr; 32%</span>
+              </div>
+
+              <!-- Row 2 Notifikasi -->
+              <div class="score-change-item">
+                <span class="event-date">15 Jul</span>
+                <span class="event-desc">Gangguan</span>
+                <span class="event-score">47% &rarr; 37%</span>
+              </div>
+
+              <!-- Row 3 Notifikasi -->
+              <div class="score-change-item">
+                <span class="event-date">16 Apr</span>
+                <span class="event-desc">Mesin Rusak</span>
+                <span class="event-score">70% &rarr; 47%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

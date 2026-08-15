@@ -9,6 +9,10 @@ const mfeConfig = withModuleFederationPlugin({
 
   exposes: {
     './EngineerSmartprioritization': './src/app/components/engineer-smartprioritization/engineer-smartprioritization',
+
+    './EngineerDetail': './src/app/components/engineer-detail/engineer-detail',
+    
+    './EngineerDetailById': './src/app/components/engineer-detail-by-id/engineer-detail-by-id',
   },
 
   shared: {

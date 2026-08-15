@@ -1,0 +1,184 @@
+@reference "tailwindcss";
+
+.dashboard-container {
+    @apply flex h-full flex-col gap-4 p-4;
+}
+
+.dashboard-header {
+    @apply flex h-10 flex-col justify-center;
+}
+
+.dashboard-title h1 {
+    @apply text-2xl font-bold text-gray-800;
+}
+
+/* --- Layout Grid Utama --- */
+
+.dashboard-grid {
+    @apply grid grid-rows-[auto_1fr] gap-4 flex-1;
+}
+
+/* Row 1: Terbagi menjadi 2 kolom */
+.grid-row-top {
+    @apply grid grid-cols-1 md:grid-cols-[25%_1fr] gap-4;
+}
+
+/* Inner Card Grid Layout */
+.card-grid {
+    @apply grid h-full grid-rows-[auto_1fr] gap-3;
+}
+
+.card-grid-trend {
+    @apply grid h-full grid-rows-[auto_1fr_auto] gap-3;
+}
+
+/* Base Card Header */
+.card-header {
+    @apply border-b border-gray-100 pb-2;
+}
+
+/* Header Internal Grid (Khusus Card 1) */
+.card-header-grid {
+    @apply grid grid-rows-3 gap-1 pb-3 items-center justify-items-center text-center;
+}
+
+.header-title h3 {
+    @apply text-sm font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.header-value span {
+    @apply text-3xl font-extrabold text-gray-900;
+}
+
+.header-status {
+    @apply flex items-center pt-1;
+}
+
+/* Status Badges Styling */
+.status-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+
+.status-critical {
+    @apply bg-red-100 text-red-800 border border-red-200;
+}
+
+.status-good {
+    @apply bg-green-100 text-green-800 border border-green-200;
+}
+
+/* --- Card Content 4-Border Layout (Card 1) --- */
+
+.card-content {
+    @apply py-2;
+}
+
+.card-content-grid {
+    @apply grid grid-rows-2 gap-3 py-2;
+}
+
+.content-row {
+    @apply grid grid-cols-2 gap-3;
+}
+
+/* Box dengan border individu */
+.info-box {
+    @apply flex flex-col justify-center rounded-md border border-gray-200 bg-gray-50/50 p-2.5 transition-colors hover:border-gray-300;
+}
+
+.box-label {
+    @apply text-xs font-medium text-gray-500;
+}
+
+.box-value {
+    @apply text-sm font-semibold text-gray-800;
+}
+
+/* --- Custom Layout Card 2 (Trend Section Grid) --- */
+
+.trend-grid {
+    @apply grid grid-cols-3 gap-4 h-full items-center;
+}
+
+/* Kolom tren dengan 3 row internal */
+.trend-column {
+    @apply grid grid-rows-3 gap-1 rounded-lg border border-gray-100 bg-gray-50/50 p-3 text-center justify-items-center items-center;
+}
+
+.trend-header {
+    @apply text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.trend-delta {
+    @apply text-xl font-bold;
+}
+
+.trend-delta.negative {
+    @apply text-red-600;
+}
+
+.trend-delta.positive {
+    @apply text-green-600;
+}
+
+.trend-range {
+    @apply text-xs font-semibold text-gray-600;
+}
+
+/* --- Seksi Titik Perubahan Skor (Card 2 Bottom Section) --- */
+
+.score-change-section {
+    @apply flex flex-col gap-2 border-t border-gray-100 pt-3;
+}
+
+.score-change-header h4 {
+    @apply text-xs font-semibold uppercase tracking-wider text-gray-500;
+}
+
+/* List notifikasi 3 row menurun ke bawah */
+.score-change-list {
+    @apply grid grid-rows-3 gap-2;
+}
+
+/* Item notifikasi individual (per baris) */
+.score-change-item {
+    @apply flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2 text-xs text-gray-700;
+}
+
+.event-date {
+    @apply font-semibold text-gray-900 w-16;
+}
+
+.event-desc {
+    @apply text-gray-600 flex-1 px-2 text-left truncate;
+}
+
+.event-score {
+    @apply font-semibold text-red-600 whitespace-nowrap;
+}
+
+/* Card Base Styling */
+.card {
+    @apply rounded-lg border border-gray-200 bg-white p-4 shadow-sm;
+}
+
+.card h3 {
+    @apply text-lg font-semibold text-gray-700;
+}
+
+/* Tambahkan variasi status ini */
+.status-routine {
+    @apply bg-green-100 text-green-800 border-green-200;
+}
+
+.status-minor {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+}
+
+.status-major {
+    @apply bg-orange-100 text-orange-800 border-orange-200;
+}
+
+.status-critical {
+    @apply bg-red-100 text-red-800 border-red-200;
+}

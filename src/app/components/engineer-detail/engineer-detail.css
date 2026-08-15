@@ -1,0 +1,149 @@
+.smart-prioritization-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 320px; /* Lebar maksimal input pencarian */
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 16px 8px 38px; /* Offset kiri agar teks tidak menutupi ikon */
+    font-size: 14px;
+    color: #1f2937;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+
+.search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.line-filter {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.line-btn {
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.line-btn:hover {
+    background: #f3f4f6;
+}
+
+.line-btn.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* Styling untuk Tombol Tambah Mesin & Ikon */
+
+.add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #2563eb;
+    color: white;
+    border: 1px solid #2563eb;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.smart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.smart-table thead {
+    background: #f9fafb;
+}
+
+.smart-table th,
+.smart-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.smart-table th {
+    font-weight: 600;
+    color: #374151;
+}
+
+.smart-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.action-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.action-btn:hover {
+    background: #1d4ed8;
+}
