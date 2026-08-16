@@ -123,4 +123,11 @@ export class MachineService {
       secondsToAdd
     });
   }
+
+  // GET: api/Machine/qr-code/{id}
+  getMachineQrCode(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/Machine/qr-code/${id}`, {
+      responseType: 'blob',
+    });
+  }
 }
