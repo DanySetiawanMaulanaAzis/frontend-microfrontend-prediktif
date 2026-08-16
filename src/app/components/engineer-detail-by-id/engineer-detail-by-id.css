@@ -5,11 +5,15 @@
 }
 
 .dashboard-header {
-    @apply flex h-10 flex-col justify-center;
+    @apply flex items-center justify-between py-2;
 }
 
 .dashboard-title h1 {
     @apply text-2xl font-bold text-gray-800;
+}
+
+.btn-qr {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-8 py-1.5 min-w-[190px] text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
 }
 
 /* --- Layout Grid Utama --- */
@@ -181,4 +185,78 @@
 
 .status-critical {
     @apply bg-red-100 text-red-800 border-red-200;
+}
+
+
+
+/* Styling Modal Overlay & Container */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  width: 320px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  color: #666;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.qr-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.qr-caption {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 0.875rem;
 }

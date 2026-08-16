@@ -16,6 +16,11 @@ export class EngineerDetailById {
   id = input.required<number>();
   machineDetail = signal<Detailmachine | null>(null)
   isLoading = signal<boolean>(false);
+
+  // Modal QR State
+  showQrModal = signal<boolean>(false);
+  qrImageUrl = signal<string | null>(null);
+  isQrLoading = signal<boolean>(false);
   
   // Reference signal dari service
   activeOperationHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
@@ -64,5 +69,30 @@ export class EngineerDetailById {
         this.isLoading.set(false);
       }
     });
+  }
+
+  // --- Handlers QR Modal ---
+  openQrModal(): void {
+    this.showQrModal.set(true);
+    if (!this.qrImageUrl()) {
+      this.isQrLoading.set(true);
+      const machineId = Number(this.id());
+
+      this.machineService.getMachineQrCode(machineId).subscribe({
+        next: (blob) => {
+          const imageUrl = URL.createObjectURL(blob);
+          this.qrImageUrl.set(imageUrl);
+          this.isQrLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Gagal memuat gambar QR Code:', err);
+          this.isQrLoading.set(false);
+        },
+      });
+    }
+  }
+
+  closeQrModal(): void {
+    this.showQrModal.set(false);
   }
 }
