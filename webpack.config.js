@@ -13,6 +13,10 @@ const mfeConfig = withModuleFederationPlugin({
     './EngineerDetail': './src/app/components/engineer-detail/engineer-detail',
     
     './EngineerDetailById': './src/app/components/engineer-detail-by-id/engineer-detail-by-id',
+
+    './OperatorDashboardSelectedMachine': './src/app/components/operator-dashboard-selected-machine/operator-dashboard-selected-machine',
+
+    './OperatorDashboardById': './src/app/components/operator-dashboard-by-id/operator-dashboard-by-id',
   },
 
   shared: {

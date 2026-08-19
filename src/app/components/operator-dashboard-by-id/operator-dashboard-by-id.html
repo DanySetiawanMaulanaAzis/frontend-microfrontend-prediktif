@@ -1,0 +1,46 @@
+@if (isLoading()) {
+    <div class="loading-state" style="text-align: center; padding: 2rem;">
+        <p>Memuat data mesin...</p>
+    </div>
+} @else if (machine(); as data) {
+    <!-- Row 1: Header -->
+    <header class="operator-header">
+        <div class="machine-name-row">
+            <h1 class="machine-name">{{ data.machineName }}</h1>
+        </div>
+        <div class="machine-location-row">
+            <p class="machine-location">{{ data.location }}</p>
+        </div>
+    </header>
+
+    <!-- Row 2: Konten Utama -->
+    <main class="operator-content">
+        <div class="percentage-row">
+            <span class="percentage-value" [ngClass]="getScoreClass(data.ahs)">
+                {{ data.ahs ?? 0 }}%
+            </span>
+        </div>
+        <div class="status-row">
+            <span class="status-badge" [ngClass]="getStatusClass(data.statusName)">
+                <span class="status-dot"></span>
+                {{ data.statusName }}
+            </span>
+        </div>
+    </main>
+
+    <!-- Row 3: Tombol Panggil Teknisi -->
+    <footer class="operator-footer">
+        <button type="button" class="btn-call-technician" (click)="onCallTechnician()">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                </path>
+            </svg>
+            Panggil Teknisi
+        </button>
+    </footer>
+} @else {
+    <div class="error-state" style="text-align: center; padding: 2rem;">
+        <p>Data mesin tidak ditemukan.</p>
+    </div>
+}

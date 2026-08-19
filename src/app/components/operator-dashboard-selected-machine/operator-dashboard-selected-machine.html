@@ -1,0 +1,41 @@
+<!-- Row 1: Header -->
+<header class="operator-header">
+    <h1 class="operator-title">Pilih Mesin Operator</h1>
+    <p class="operator-subtitle">Silakan pilih mesin yang sedang digunakan untuk memulai</p>
+</header>
+
+<!-- Row 2: Selected Machine (Dropdown) -->
+<main class="operator-content">
+    <div class="form-group">
+        <label for="machine-select" class="form-label">Mesin yang Dipilih</label>
+        <div class="select-wrapper">
+            <select id="machine-select" class="form-select" [ngModel]="selectedMachineId()"
+                (ngModelChange)="selectedMachineId.set($event)" [disabled]="isLoading()">
+                <option [ngValue]="null" disabled selected>
+                    {{ isLoading() ? 'Memuat data mesin...' : '-- Pilih Mesin --' }}
+                </option>
+
+                <!-- UBAH: Gunakan machine.id sebagai track dan value -->
+                @for (machine of machines(); track machine.id) {
+                <option [value]="machine.id">
+                    {{ machine.machineName }} ({{ machine.location }})
+                </option>
+                }
+            </select>
+
+            <div class="select-icon">
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Row 3: Button -->
+<footer class="operator-footer">
+    <button type="button" class="btn-primary" (click)="onConfirmMachine()"
+        [disabled]="isLoading() || !selectedMachineId()">
+        Konfirmasi Mesin
+    </button>
+</footer>
