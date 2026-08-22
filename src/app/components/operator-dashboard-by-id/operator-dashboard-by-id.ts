@@ -1,18 +1,22 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { MachineService } from '../../services/machine';
 import { Detailmachine } from '../../models/detailmachine';
+import { OperatorDashboardCallTechnicianByIdDialog } from '../operator-dashboard-call-technician-by-id-dialog/operator-dashboard-call-technician-by-id-dialog';
+import { Createundermaintenancerequest } from '../../models/createundermaintenancerequest';
 
 @Component({
   selector: 'app-operator-dashboard-by-id',
-  imports: [CommonModule],
+  imports: [CommonModule, MatDialogModule],
   templateUrl: './operator-dashboard-by-id.html',
   styleUrl: './operator-dashboard-by-id.css',
 })
 export class OperatorDashboardById implements OnInit {
   private route = inject(ActivatedRoute);
   private machineService = inject(MachineService);
+  private dialog = inject(MatDialog);
 
   machine = signal<Detailmachine | null>(null);
   isLoading = signal<boolean>(true);
@@ -65,10 +69,32 @@ export class OperatorDashboardById implements OnInit {
     return 'score-red';                    // Merah (0-39%)
   }
 
+  // 5. Update fungsi panggil dialog
   onCallTechnician(): void {
     const currentMachine = this.machine();
     if (currentMachine) {
       console.log(`Panggilan teknisi dikirim untuk mesin: ${currentMachine.machineName}`);
+
+      const payload: Createundermaintenancerequest = {
+        machineId: currentMachine.machineId,
+        machineName: currentMachine.machineName,
+        maintenance: true // Mengirim nilai boolean true (1 pada kolom BIT)
+      };
+
+      this.machineService.createUnderMaintenance(payload).subscribe({
+        next: (res) => {
+          console.log('Status maintenance berhasil diperbarui:', res);
+
+          this.dialog.open(OperatorDashboardCallTechnicianByIdDialog, {
+            width: '500px',
+            disableClose: false,
+            data: { machine: currentMachine }
+          });
+        },
+        error: (err) => {
+          console.error('Gagal memanggil teknisi:', err);
+        }
+      });
     }
   }
 }

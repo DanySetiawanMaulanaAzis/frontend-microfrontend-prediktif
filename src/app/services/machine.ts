@@ -5,6 +5,8 @@ import { Observable, tap } from 'rxjs';
 import { Machine } from '../models/machine';
 import { Createandupdatemachinerequest } from '../models/createandupdatemachinerequest';
 import { Detailmachine } from '../models/detailmachine';
+import { Createundermaintenancerequest } from '../models/createundermaintenancerequest';
+import { Undermaintenance } from '../models/undermaintenance';
 
 @Injectable({
   providedIn: 'root',
@@ -14,32 +16,78 @@ export class MachineService {
   // Endpoint mengarah ke api/Machine sesuai atribut [Route("api/[controller]")] di .NET
   private apiUrl = environment.apiUrl;
 
-  // Map untuk menyimpan signal jam operasional tiap mesin: Key = MachineId, Value = Signal<number>
+  // Track Operation Hours
   private operationHoursMap = new Map<number, ReturnType<typeof signal<number>>>();
-  private secondsBufferMap = new Map<number, number>();
+  private operationBufferMap = new Map<number, number>();
+
+  // Track Downtime Hours
+  private downtimeHoursMap = new Map<number, ReturnType<typeof signal<number>>>();
+  private downtimeBufferMap = new Map<number, number>();
+
+  // Set untuk menyimpan daftar machineId yang sedang maintenance (maintenance === true)
+  private maintenanceSet = new Set<number>();
   private globalTimerStarted = false;
 
   constructor() {
     this.startGlobalTimer();
   }
 
-  // Timer global 1 detik untuk memutar semua mesin yang terdaftar
+  // Polling data status undermaintenance dari backend
+  private refreshMaintenanceStatus(): void {
+    this.getUnderMaintenance().subscribe({
+      next: (list) => {
+        this.maintenanceSet.clear();
+        list.forEach((item) => {
+          // Jika maintenance = true, masukkan ke daftar blokir timer
+          if (item.maintenance) {
+            this.maintenanceSet.add(item.machineId);
+          }
+        });
+      },
+      error: (err) => console.error('Gagal memperbarui status maintenance:', err),
+    });
+  }
+
+  // Timer global 1 detik
   private startGlobalTimer(): void {
     if (this.globalTimerStarted) return;
     this.globalTimerStarted = true;
 
+    this.refreshMaintenanceStatus();
+    setInterval(() => this.refreshMaintenanceStatus(), 5000);
+
     setInterval(() => {
+      // 1. DOWNTIME TIMER: Berjalan untuk mesin yang Maintenance = TRUE
+      this.downtimeHoursMap.forEach((downtimeSignal, machineId) => {
+        if (this.maintenanceSet.has(machineId)) {
+          // Increment detik Downtime
+          downtimeSignal.update((sec) => sec + 1);
+
+          const currentBuffer = (this.downtimeBufferMap.get(machineId) || 0) + 1;
+          this.downtimeBufferMap.set(machineId, currentBuffer);
+
+          // Sync ke Backend tiap 5 detik
+          if (currentBuffer >= 5) {
+            this.downtimeBufferMap.set(machineId, 0);
+            this.syncDowntimeHoursToBackend(machineId, currentBuffer);
+          }
+        }
+      });
+
+      // 2. OPERATION TIMER: Berjalan untuk mesin yang Maintenance = FALSE
       this.operationHoursMap.forEach((hoursSignal, machineId) => {
-        // Increment detik di client
-        hoursSignal.update(sec => sec + 1);
+        if (!this.maintenanceSet.has(machineId)) {
+          // Increment detik Operation
+          hoursSignal.update((sec) => sec + 1);
 
-        // Buffer untuk sync backend tiap 5 detik
-        const currentBuffer = (this.secondsBufferMap.get(machineId) || 0) + 1;
-        this.secondsBufferMap.set(machineId, currentBuffer);
+          const currentBuffer = (this.operationBufferMap.get(machineId) || 0) + 1;
+          this.operationBufferMap.set(machineId, currentBuffer);
 
-        if (currentBuffer >= 5) {
-          this.secondsBufferMap.set(machineId, 0);
-          this.syncOperationHoursToBackend(machineId, currentBuffer);
+          // Sync ke Backend tiap 5 detik
+          if (currentBuffer >= 5) {
+            this.operationBufferMap.set(machineId, 0);
+            this.syncOperationHoursToBackend(machineId, currentBuffer);
+          }
         }
       });
     }, 1000);
@@ -47,7 +95,13 @@ export class MachineService {
 
   private syncOperationHoursToBackend(machineId: number, secondsToAdd: number): void {
     this.updateOperationHours(machineId, secondsToAdd).subscribe({
-      error: (err) => console.error(`Gagal update operation hours untuk machine ${machineId}:`, err)
+      error: (err) => console.error(`Gagal update operation hours untuk machine ${machineId}:`, err),
+    });
+  }
+
+  private syncDowntimeHoursToBackend(machineId: number, secondsToAdd: number): void {
+    this.updateDowntimeHours(machineId, secondsToAdd).subscribe({
+      error: (err) => console.error(`Gagal update downtime hours machine ${machineId}:`, err),
     });
   }
 
@@ -56,13 +110,24 @@ export class MachineService {
     if (!this.operationHoursMap.has(machineId)) {
       this.operationHoursMap.set(machineId, signal<number>(initialSeconds));
     } else {
-      // Jika sudah ada tapi bernilai 0/baru, sinkronkan dengan data backend terkini
       const existingSignal = this.operationHoursMap.get(machineId)!;
       if (existingSignal() === 0 && initialSeconds > 0) {
         existingSignal.set(initialSeconds);
       }
     }
     return this.operationHoursMap.get(machineId)!;
+  }
+
+  getDowntimeHoursSignal(machineId: number, initialSeconds: number) {
+    if (!this.downtimeHoursMap.has(machineId)) {
+      this.downtimeHoursMap.set(machineId, signal<number>(initialSeconds));
+    } else {
+      const existingSignal = this.downtimeHoursMap.get(machineId)!;
+      if (existingSignal() === 0 && initialSeconds > 0) {
+        existingSignal.set(initialSeconds);
+      }
+    }
+    return this.downtimeHoursMap.get(machineId)!;
   }
 
 
@@ -124,10 +189,32 @@ export class MachineService {
     });
   }
 
+  updateDowntimeHours(machineId: number, secondsToAdd: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/Machine/downtime-hours`, {
+      machineId,
+      secondsToAdd
+    });
+  }
+
   // GET: api/Machine/qr-code/{id}
   getMachineQrCode(id: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/Machine/qr-code/${id}`, {
       responseType: 'blob',
     });
+  }
+
+  // POST: api/Machine/under-maintenance
+  createUnderMaintenance(data: Createundermaintenancerequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}/Machine/under-maintenance`, data);
+  }
+
+  // GET: api/Machine/under-maintenance
+  getUnderMaintenance(): Observable<Undermaintenance[]> {
+    return this.http.get<Undermaintenance[]>(`${this.apiUrl}/Machine/under-maintenance`);
+  }
+
+  // GET: api/Machine/under-maintenance/{id}
+  getUnderMaintenanceById(id: number): Observable<Undermaintenance> {
+    return this.http.get<Undermaintenance>(`${this.apiUrl}/Machine/under-maintenance/${id}`);
   }
 }

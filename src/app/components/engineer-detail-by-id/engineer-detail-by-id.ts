@@ -24,6 +24,7 @@ export class EngineerDetailById {
   
   // Reference signal dari service
   activeOperationHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
+  activeDowntimeHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
 
   constructor() {
     // Reactive Fetch: Berjalan setiap kali nilai `id()` berubah
@@ -35,17 +36,25 @@ export class EngineerDetailById {
     });
   }
 
-  // Formatting detik ke hh:mm:ss
-  formattedOperationHours = computed(() => {
-    const hoursSignal = this.activeOperationHoursSignal();
-    const total = hoursSignal ? hoursSignal() : 0;
-
-    const hours = Math.floor(total / 3600);
-    const minutes = Math.floor((total % 3600) / 60);
-    const seconds = total % 60;
+  private formatSeconds(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
     const pad = (num: number) => num.toString().padStart(2, '0');
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  }
+
+  // Live Formatted Signal untuk Jam Operasional
+  formattedOperationHours = computed(() => {
+    const hoursSignal = this.activeOperationHoursSignal();
+    return this.formatSeconds(hoursSignal ? hoursSignal() : 0);
+  });
+
+  // Live Formatted Signal untuk Jam Downtime
+  formattedDowntimeHours = computed(() => {
+    const downtimeSignal = this.activeDowntimeHoursSignal();
+    return this.formatSeconds(downtimeSignal ? downtimeSignal() : 0);
   });
 
   private fetchDetail(id: number): void {
@@ -54,20 +63,27 @@ export class EngineerDetailById {
     this.machineService.getMachineDetailById(id).subscribe({
       next: (data) => {
         this.machineDetail.set(data);
-        
-        // Ambil reference signal live dari service
-        const liveSignal = this.machineService.getOperationHoursSignal(
-          data.machineId, 
+
+        // Ambil reference signal live Operation Hours
+        const liveOpSignal = this.machineService.getOperationHoursSignal(
+          data.machineId,
           data.operationHours || 0
         );
-        this.activeOperationHoursSignal.set(liveSignal);
-        
+        this.activeOperationHoursSignal.set(liveOpSignal);
+
+        // Ambil reference signal live Downtime Hours
+        const liveDtSignal = this.machineService.getDowntimeHoursSignal(
+          data.machineId,
+          data.downtimeHours || 0
+        );
+        this.activeDowntimeHoursSignal.set(liveDtSignal);
+
         this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Gagal mengambil detail mesin', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 

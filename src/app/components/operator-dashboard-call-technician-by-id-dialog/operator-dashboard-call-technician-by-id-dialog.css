@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Pembungkus Dialog Popup (Base Putih Bersih) */
+.dashboard-dialog-wrapper {
+  @apply bg-white border border-neutral-200/80 rounded-3xl p-6 sm:p-8 shadow-xl max-w-2xl w-full mx-auto overflow-hidden;
+}
+
+/* Container Utama: 1 Row, 2 Columns dengan Grid Tailwind */
+.dashboard-grid-container {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch;
+}
+
+/* Styling Kolom Pertama (Pesan Notifikasi - Abu-Abu Terang) */
+.dashboard-message-card {
+  @apply bg-neutral-50/80 border border-neutral-200/60 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-center relative overflow-hidden;
+}
+
+.dashboard-status-indicator {
+  @apply absolute top-0 left-0 w-1.5 h-full bg-amber-500;
+}
+
+.dashboard-message-title {
+  @apply text-base sm:text-lg font-semibold text-neutral-800 mb-2;
+}
+
+.dashboard-message-text {
+  @apply text-xs sm:text-sm text-neutral-600 leading-relaxed font-medium;
+}
+
+/* Styling Kolom Kedua (Kode QR - Abu-Abu Terang) */
+.dashboard-qr-card {
+  @apply bg-neutral-50/80 border border-neutral-200/60 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col items-center justify-center gap-3;
+}
+
+.dashboard-qr-wrapper {
+  @apply p-2.5 bg-white rounded-xl shadow-md border border-neutral-200;
+}
+
+.dashboard-qr-image {
+  @apply w-28 h-28 sm:w-32 sm:h-32 object-contain;
+}
+
+.dashboard-qr-label {
+  @apply text-[11px] font-semibold text-neutral-500 uppercase tracking-wider;
+}

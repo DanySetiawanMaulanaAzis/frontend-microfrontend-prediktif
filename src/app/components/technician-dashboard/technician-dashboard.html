@@ -1,0 +1,85 @@
+<!-- Row 1: Header + Navbar -->
+<header class="technician-header">
+  <div class="brand-title">Technician Portal</div>
+  <nav class="nav-container">
+    <a href="#" class="nav-link nav-link-active">Dashboard</a>
+    <a href="#" class="nav-link">Machine Scan</a>
+  </nav>
+</header>
+
+<!-- Row 2: Konten Utama (Dashboard View) -->
+<main class="technician-content">
+  
+  <!-- Content Row 1: Informasi Jadwal Mesin Hari Ini (Grid 2 Row) -->
+  <section class="schedule-section">
+    <!-- Row 1 Internal: Header -->
+    <div class="schedule-header">
+      <h2 class="schedule-title">Jadwal Mesin Hari Ini</h2>
+    </div>
+    
+    <!-- Row 2 Internal: Konten List -->
+    <div class="schedule-list">
+      
+      <!-- State Loading -->
+      @if (isLoading()) {
+        <div class="p-4 text-xs text-center text-slate-500">
+          Memuat jadwal mesin...
+        </div>
+      } 
+      
+      <!-- State Error -->
+      @else if (errorMessage()) {
+        <div class="p-4 text-xs text-center text-red-500">
+          {{ errorMessage() }}
+        </div>
+      } 
+      
+      <!-- State Empty Data -->
+      @else if (schedules().length === 0) {
+        <div class="p-4 text-xs text-center text-slate-400">
+          Tidak ada jadwal pemeliharaan mesin hari ini.
+        </div>
+      }
+
+      <!-- Loop Data dari Database -->
+      @else {
+        @for (item of schedules(); track item.id) {
+          <div class="schedule-item">
+            <!-- Row 1, Col 1: Nama Mesin -->
+            <span class="machine-name">{{ item.machineName }}</span>
+            
+            <!-- Row 1, Col 2: ASH Score -->
+            <span class="ash-value">ASH {{ item.ahs ?? 0 }}%</span>
+            
+            <!-- Row 2, Col 1: Lokasi Mesin -->
+            <span class="machine-location">Lokasi: {{ item.location }}</span>
+            
+            <!-- Row 2, Col 2: Jam (Format HH:mm WIB) -->
+            <span class="schedule-time">{{ item.createdAt | date:'HH:mm' }} WIB</span>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- Content Row 2: Aksi / Pilih Mesin (Grid 2 Row) -->
+  <section class="action-section">
+    <!-- Row 1 Internal: Header -->
+    <div class="action-header">
+      <h3 class="action-title">Pilih Mesin untuk Di-scan</h3>
+    </div>
+
+    <!-- Row 2 Internal: Konten Group Button (Bisa diringkas pakai data yang sama jika diperlukan) -->
+    <div class="machine-button-group">
+      @for (item of schedules(); track item.id) {
+        <button type="button" class="btn-machine" (click)="onSelectMachine(item.machineDetailId)">
+          <span>{{ item.machineName }}</span>
+          <span class="btn-subtext">Lokasi: {{ item.location }}</span>
+        </button>
+      } @empty {
+        <p class="text-xs text-slate-400 col-span-full">Tidak ada mesin yang tersedia untuk di-scan.</p>
+      }
+    </div>
+  </section>
+
+</main>

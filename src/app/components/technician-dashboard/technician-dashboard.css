@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Header Layout */
+.technician-header {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100;
+}
+
+.brand-title {
+  @apply text-lg font-bold text-slate-800;
+}
+
+.nav-container {
+  @apply flex items-center gap-2 bg-slate-100 p-1 rounded-xl;
+}
+
+.nav-link {
+  @apply px-4 py-1.5 text-sm font-medium text-slate-600 rounded-lg transition-colors hover:text-slate-900;
+}
+
+.nav-link-active {
+  @apply bg-white text-slate-900 shadow-sm;
+}
+
+/* Area Konten Utama (Grid 2 Row) */
+.technician-content {
+  @apply grid grid-rows-[auto_1fr] gap-6 w-full h-full;
+}
+
+/* Content Row 1: Section Jadwal (Grid 2 Row) */
+.schedule-section {
+  @apply grid grid-rows-[auto_1fr] gap-3 bg-slate-50 border border-slate-100 rounded-xl p-4;
+}
+
+/* Row 1 Internal: Header */
+.schedule-header {
+  @apply flex items-center justify-between;
+}
+
+.schedule-title {
+  @apply text-sm font-semibold text-slate-700;
+}
+
+/* Row 2 Internal: Konten List */
+.schedule-list {
+  @apply flex flex-col gap-2;
+}
+
+/* Item List menggunakan Grid 2 Kolom x 2 Baris */
+.schedule-item {
+  @apply grid grid-cols-2 grid-rows-2 items-center gap-y-1 gap-x-2 bg-white p-3 rounded-lg border border-slate-100;
+}
+
+/* Row 1, Col 1: Nama Mesin */
+.machine-name {
+  @apply text-xs font-bold text-slate-800 justify-self-start;
+}
+
+/* Row 1, Col 2: ASH Score */
+.ash-value {
+  @apply text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 justify-self-end;
+}
+
+/* Row 2, Col 1: Lokasi Mesin */
+.machine-location {
+  @apply text-[11px] text-slate-500 justify-self-start;
+}
+
+/* Row 2, Col 2: Jam */
+.schedule-time {
+  @apply text-[11px] font-medium text-slate-500 justify-self-end;
+}
+
+/* Content Row 2: Section Tombol Pilih Mesin (Grid 2 Row) */
+.action-section {
+  @apply grid grid-rows-[auto_1fr] gap-3;
+}
+
+/* Row 1 Internal: Header */
+.action-header {
+  @apply flex items-center justify-between;
+}
+
+.action-title {
+  @apply text-sm font-semibold text-slate-700;
+}
+
+/* Row 2 Internal: Konten Group Button */
+.machine-button-group {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-3;
+}
+
+.btn-machine {
+  @apply flex flex-col items-start justify-center p-3 text-left bg-white border border-slate-200 rounded-xl transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-md cursor-pointer;
+}
+
+.btn-machine span:first-child {
+  @apply text-xs font-semibold text-slate-800;
+}
+
+.btn-subtext {
+  @apply text-[10px] text-slate-500 mt-1;
+}
