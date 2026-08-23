@@ -33,28 +33,29 @@
   @if (showPreventiveModal()) {
   <div class="modal-overlay" (click)="closePreventiveModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
+      <!-- Row 1: Header -->
       <div class="modal-header">
-        <h3>Jadwal Preventive Maintenance</h3>
+        <h3>Preventive Maintenance</h3>
         <button type="button" class="btn-close" (click)="closePreventiveModal()">&times;</button>
       </div>
+
+      <!-- Row 2: Content -->
       <div class="modal-body">
-        <p class="text-sm text-gray-600 mb-4">
+        <p class="modal-text">
           Apakah Anda yakin ingin membuat permintaan Preventive Maintenance untuk mesin
           <strong>{{ machineDetail()?.machineName }}</strong>?
         </p>
+      </div>
 
-        <div class="flex justify-end gap-2 w-full mt-4">
-          <button type="button"
-            class="px-4 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
-            (click)="closePreventiveModal()">
-            Batal
-          </button>
-          <button type="button"
-            class="px-4 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            [disabled]="isSubmitting()" (click)="submitPreventiveMaintenance()">
-            {{ isSubmitting() ? 'Mengirim...' : 'Kirim Permintaan' }}
-          </button>
-        </div>
+      <!-- Row 3: Action Buttons -->
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" (click)="closePreventiveModal()">
+          Batal
+        </button>
+        <button type="button" class="btn-modal-submit" [disabled]="isSubmitting()"
+          (click)="submitPreventiveMaintenance()">
+          {{ isSubmitting() ? 'Mengirim...' : 'Kirim Permintaan' }}
+        </button>
       </div>
     </div>
   </div>
