@@ -78,7 +78,8 @@ export class OperatorDashboardById implements OnInit {
       const payload: Createundermaintenancerequest = {
         machineId: currentMachine.machineId,
         machineName: currentMachine.machineName,
-        maintenance: true // Mengirim nilai boolean true (1 pada kolom BIT)
+        maintenance: true,
+        eventId: 2
       };
 
       this.machineService.createUnderMaintenance(payload).subscribe({

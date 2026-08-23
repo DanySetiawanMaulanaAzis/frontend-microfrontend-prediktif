@@ -5,75 +5,72 @@
     <a routerLink="/technician" class="text-xs text-blue-600 hover:underline">← Kembali ke Dashboard</a>
   </div>
   <p class="header-subtitle">
-    {{ machineDetail()?.machineName ? ('Mesin: ' + machineDetail()?.machineName + ' (' + machineDetail()?.location + ')') : 'Silakan isi parameter operasional mesin di bawah ini.' }}
+    {{ machineDetail()?.machineName ? ('Mesin: ' + machineDetail()?.machineName + ' (' + machineDetail()?.location +
+    ')') : 'Silakan isi parameter operasional mesin di bawah ini.' }}
   </p>
 </header>
 
 @if (isLoading()) {
-  <div class="p-6 text-center text-slate-500 text-xs">Memuat data detail mesin...</div>
+<div class="p-6 text-center text-slate-500 text-xs">Memuat data detail mesin...</div>
 } @else if (errorMessage()) {
-  <div class="p-6 text-center text-red-500 text-xs">{{ errorMessage() }}</div>
+<div class="p-6 text-center text-red-500 text-xs">{{ errorMessage() }}</div>
 } @else {
-  <!-- Konten/Form Inputs -->
-  <form class="card-content">
-    <div class="field-group">
-      <label for="machine-age" class="field-label">Tahun Produksi</label>
-      <input 
-        type="text" 
-        id="machine-age" 
-        class="field-input" 
-        [value]="machineDetail()?.productionYear || '-'" 
-        readonly />
-    </div>
+<!-- Konten/Form Inputs -->
+<form class="card-content" (ngSubmit)="onSubmitEvaluation()">
+  <div class="field-group">
+    <label for="machine-age" class="field-label">Tahun Produksi</label>
+    <input type="text" id="machine-age" class="field-input" [value]="machineDetail()?.productionYear || '-'" readonly />
+  </div>
 
-    <div class="field-group">
-      <label for="op-hours" class="field-label">Jam Operasional (HH:mm:ss)</label>
-      <input 
-        type="text" 
-        id="op-hours" 
-        class="field-input" 
-        [value]="formattedOperationHours()" 
-        readonly />
-    </div>
+  <div class="field-group">
+    <label for="ahs-score" class="field-label">Nilai AHS Score</label>
+    <input type="text" id="ahs-score" class="field-input" [value]="(machineDetail()?.ahs ?? 0) + '%'" readonly />
+  </div>
 
-    <div class="field-group">
-      <label for="downtime-hours" class="field-label">Jam Downtime (HH:mm:ss)</label>
-      <input 
-        type="text" 
-        id="downtime-hours" 
-        class="field-input" 
-        [value]="formattedDowntimeHours()" 
-        readonly />
-    </div>
+  <div class="field-group">
+    <label for="op-hours" class="field-label">Jam Operasional (HH:mm:ss)</label>
+    <input type="text" id="op-hours" class="field-input" [value]="formattedOperationHours()" readonly />
+  </div>
 
-    <div class="field-group">
-      <label for="ahs-score" class="field-label">Nilai AHS Score</label>
-      <input 
-        type="text" 
-        id="ahs-score" 
-        class="field-input" 
-        [value]="(machineDetail()?.ahs ?? 0) + '%'" 
-        readonly />
-    </div>
+  <div class="field-group">
+    <label for="downtime-hours" class="field-label">Jam Downtime (HH:mm:ss)</label>
+    <input type="text" id="downtime-hours" class="field-input" [value]="formattedDowntimeHours()" readonly />
+  </div>
 
-    <div class="field-group">
-      <label for="status-name" class="field-label">Status Mesin</label>
-      <input 
-        type="text" 
-        id="status-name" 
-        class="field-input" 
-        [value]="machineDetail()?.statusName || '-'" 
-        readonly />
-    </div>
+  <div class="field-group">
+    <label for="days-last-service" class="field-label">Hari Terakhir Servis</label>
+    <input type="text" id="days-last-service" class="field-input" [value]="machineDetail()?.daysSinceLastService || '-'"
+      readonly />
+  </div>
 
-    <div class="field-group field-full">
-      <label for="notes" class="field-label">Catatan Teknisi</label>
-      <textarea id="notes" class="field-textarea" placeholder="Tambahkan catatan pendukung..."></textarea>
-    </div>
-  </form>
+  <!-- Field Baru: Jarak Rentang Dari Terakhir Failure -->
+  <div class="field-group">
+    <label for="days-between-events" class="field-label">Rentang Dari Terakhir Failure</label>
+    <input type="text" id="days-between-events" class="field-input" [value]="machineDetail()?.daysBetweenEvents || '-'"
+      readonly />
+  </div>
+
+  <div class="field-group">
+    <label for="status-name" class="field-label">Kategori Kejadian</label>
+    <input type="text" id="status-name" class="field-input" [value]="machineDetail()?.maintenanceType || '-'"
+      readonly />
+  </div>
+
+  <div class="field-group">
+    <label for="status-name" class="field-label">Kejadian</label>
+    <input type="text" id="status-name" class="field-input" [value]="machineDetail()?.event || '-'" readonly />
+  </div>
+
+  <div class="field-group field-full">
+    <label for="notes" class="field-label">Catatan Teknisi</label>
+    <textarea id="notes" name="notes" class="field-textarea" placeholder="Tambahkan catatan pendukung..."
+      [(ngModel)]="notes" [disabled]="isSubmitting()"></textarea>
+  </div>
 
   <!-- Row 3: Button Kirim Penilaian -->
   <footer class="card-footer">
-    <button type="submit" class="submit-btn">Kirim Penilaian</button>
+    <button type="submit" class="submit-btn" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Mengirim...' : 'Kirim
+      Penilaian' }}</button>
   </footer>
+</form>
 }

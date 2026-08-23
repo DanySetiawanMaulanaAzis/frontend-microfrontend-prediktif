@@ -12,8 +12,31 @@
     @apply text-2xl font-bold text-gray-800;
 }
 
+/* Container untuk tombol header */
+.header-actions {
+  @apply flex items-center gap-2;
+}
+
+/* Base button class agar properti ukuran & alignment seragam */
+.btn-preventive,
 .btn-qr {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-8 py-1.5 min-w-[190px] text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+/* Pastikan ukuran icon SVG di dalam tombol tidak membesar/gepeng */
+.btn-preventive svg,
+.btn-qr svg {
+  @apply h-4 w-4 shrink-0;
+}
+
+/* Button Preventive Maintenance */
+.btn-preventive {
+  @apply border border-blue-600 bg-blue-600 text-white hover:bg-blue-700 hover:border-blue-700 focus:ring-blue-500;
+}
+
+/* Button QR Code */
+.btn-qr {
+  @apply min-w-[190px] border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:ring-indigo-500;
 }
 
 /* --- Layout Grid Utama --- */

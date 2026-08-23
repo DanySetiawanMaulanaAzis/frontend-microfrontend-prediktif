@@ -52,7 +52,7 @@
             <span class="ash-value">ASH {{ item.ahs ?? 0 }}%</span>
             
             <!-- Row 2, Col 1: Lokasi Mesin -->
-            <span class="machine-location">Lokasi: {{ item.location }}</span>
+            <span class="machine-location">Kategori: {{ item.maintenanceType }}</span>
             
             <!-- Row 2, Col 2: Jam (Format HH:mm WIB) -->
             <span class="schedule-time">{{ item.createdAt | date:'HH:mm' }} WIB</span>
@@ -72,7 +72,7 @@
     <!-- Row 2 Internal: Konten Group Button (Bisa diringkas pakai data yang sama jika diperlukan) -->
     <div class="machine-button-group">
       @for (item of schedules(); track item.id) {
-        <button type="button" class="btn-machine" (click)="onSelectMachine(item.machineDetailId)">
+        <button type="button" class="btn-machine" (click)="onSelectMachine(item.id)">
           <span>{{ item.machineName }}</span>
           <span class="btn-subtext">Lokasi: {{ item.location }}</span>
         </button>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MachineService } from '../../services/machine';
 import { Detailmachine } from '../../models/detailmachine';
 import { Subscription, interval } from 'rxjs';
+import { Createundermaintenancerequest } from '../../models/createundermaintenancerequest';
 
 @Component({
   selector: 'app-engineer-detail-by-id',
@@ -22,6 +23,9 @@ export class EngineerDetailById {
   qrImageUrl = signal<string | null>(null);
   isQrLoading = signal<boolean>(false);
   
+  showPreventiveModal = signal<boolean>(false);
+  isSubmitting = signal<boolean>(false);
+
   // Reference signal dari service
   activeOperationHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
   activeDowntimeHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
@@ -110,5 +114,45 @@ export class EngineerDetailById {
 
   closeQrModal(): void {
     this.showQrModal.set(false);
+  }
+
+  onCallTechnicianFromEngineer(): void {
+    this.showPreventiveModal.set(true);
+  }
+
+  submitPreventiveMaintenance(): void {
+    const currentMachine = this.machineDetail(); // Menggunakan signal detail mesin komponen Anda
+    
+    if (!currentMachine) {
+      console.error('Data mesin tidak ditemukan.');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+
+    const payload: Createundermaintenancerequest = {
+      machineId: currentMachine.machineId,
+      machineName: currentMachine.machineName,
+      maintenance: true,
+      eventId: 1
+    };
+
+    this.machineService.createUnderMaintenance(payload).subscribe({
+      next: (res) => {
+        console.log('Permintaan Preventive Maintenance berhasil dikirim:', res);
+        this.isSubmitting.set(false);
+        this.closePreventiveModal();
+        
+        // Opsional: tambahkan notifikasi sukses atau refresh data detail mesin jika diperlukan
+      },
+      error: (err) => {
+        console.error('Gagal membuat permintaan Preventive Maintenance:', err);
+        this.isSubmitting.set(false);
+      }
+    });
+  }
+
+  closePreventiveModal(): void {
+    this.showPreventiveModal.set(false);
   }
 }

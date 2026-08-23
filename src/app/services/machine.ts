@@ -7,6 +7,7 @@ import { Createandupdatemachinerequest } from '../models/createandupdatemachiner
 import { Detailmachine } from '../models/detailmachine';
 import { Createundermaintenancerequest } from '../models/createundermaintenancerequest';
 import { Undermaintenance } from '../models/undermaintenance';
+import { Updateundermaintenancestatusrequest } from '../models/updateundermaintenancestatusrequest';
 
 @Injectable({
   providedIn: 'root',
@@ -206,6 +207,11 @@ export class MachineService {
   // POST: api/Machine/under-maintenance
   createUnderMaintenance(data: Createundermaintenancerequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/Machine/under-maintenance`, data);
+  }
+
+  // PUT: api/Machine/undermaintenance/complete/{id}
+  completeUnderMaintenance(id: number, data: Updateundermaintenancestatusrequest): Observable<any> {
+    return this.http.put(`${this.apiUrl}/Machine/under-maintenance/complete/${id}`, data);
   }
 
   // GET: api/Machine/under-maintenance

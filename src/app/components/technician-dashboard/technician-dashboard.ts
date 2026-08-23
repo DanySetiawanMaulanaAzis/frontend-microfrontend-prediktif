@@ -39,7 +39,7 @@ export class TechnicianDashboard implements OnInit {
   }
 
   // 3. Fungsi Navigasi ke Detail Mesin
-  onSelectMachine(machineDetailId: number): void {
-    this.router.navigate(['/technician', machineDetailId]);
+  onSelectMachine(id: number): void {
+    this.router.navigate(['/technician', id]);
   }
 }

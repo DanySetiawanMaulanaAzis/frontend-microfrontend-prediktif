@@ -6,14 +6,81 @@
     <div class="dashboard-title">
       <h1>{{ detail.machineName }} ({{ detail.location }})</h1>
     </div>
-    <button type="button" class="btn-qr" (click)="openQrModal()">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-      </svg>
-      <span>Tampilkan QR</span>
-    </button>
+
+    <!-- Group Tombol Header -->
+    <div class="header-actions">
+      <!-- Button Preventive Maintenance Baru -->
+      <button type="button" class="btn-preventive" (click)="onCallTechnicianFromEngineer()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+        <span>Preventive Maintenance</span>
+      </button>
+
+      <!-- Button QR -->
+      <button type="button" class="btn-qr" (click)="openQrModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+        </svg>
+        <span>Tampilkan QR</span>
+      </button>
+    </div>
   </div>
+
+  <!-- Modal Preventive Maintenance -->
+  @if (showPreventiveModal()) {
+  <div class="modal-overlay" (click)="closePreventiveModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Jadwal Preventive Maintenance</h3>
+        <button type="button" class="btn-close" (click)="closePreventiveModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm text-gray-600 mb-4">
+          Apakah Anda yakin ingin membuat permintaan Preventive Maintenance untuk mesin
+          <strong>{{ machineDetail()?.machineName }}</strong>?
+        </p>
+
+        <div class="flex justify-end gap-2 w-full mt-4">
+          <button type="button"
+            class="px-4 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+            (click)="closePreventiveModal()">
+            Batal
+          </button>
+          <button type="button"
+            class="px-4 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            [disabled]="isSubmitting()" (click)="submitPreventiveMaintenance()">
+            {{ isSubmitting() ? 'Mengirim...' : 'Kirim Permintaan' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal Display QR Code -->
+  @if (showQrModal()) {
+  <div class="modal-overlay" (click)="closeQrModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>QR Code Mesin</h3>
+        <button type="button" class="btn-close" (click)="closeQrModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        @if (isQrLoading()) {
+        <div class="loading-spinner">Memuat QR Code...</div>
+        } @else if (qrImageUrl()) {
+        <img [src]="qrImageUrl()" alt="QR Code Mesin" class="qr-image" />
+        <p class="qr-caption">{{ machineDetail()?.machineName }}</p>
+        } @else {
+        <p class="error-text">Gagal mengambil QR Code.</p>
+        }
+      </div>
+    </div>
+  </div>
+  }
 
   <!-- Layout Grid Utama (2 Row) -->
   <div class="dashboard-grid">
