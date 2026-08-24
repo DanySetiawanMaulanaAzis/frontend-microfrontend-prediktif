@@ -1,0 +1,43 @@
+<!-- Pembungkus Dialog / Popup Box (Abu-Abu) -->
+<div class="dashboard-dialog-wrapper">
+  
+  <!-- Grid Container (1 Row, 2 Columns) -->
+  <div class="dashboard-grid-container">
+    
+    <!-- Kolom Pertama: Pesan Notifikasi -->
+    <div class="dashboard-message-card">
+      <div class="dashboard-status-indicator"></div>
+      <h3 class="dashboard-message-title">Informasi Teknisi</h3>
+      <p class="dashboard-message-text">
+        Teknisi sudah menerima notifikasi untuk mesin <strong>{{ data.machine.machineName }}</strong>, harap ditunggu.
+      </p>
+
+      <!-- Tombol Tutup -->
+      <button type="button" class="btn-close-dialog" (click)="closeDialog()" style="margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer;">
+        Tutup
+      </button>
+    </div>
+
+    <!-- Kolom Kedua: Kode QR -->
+    <div class="dashboard-qr-card">
+      <div class="dashboard-qr-wrapper">
+        @if (isQrLoading()) {
+          <div class="qr-loading" style="padding: 1rem; text-align: center;">
+            <p>Memuat QR Code...</p>
+          </div>
+        } @else if (qrImageUrl(); as srcUrl) {
+          <img 
+            [src]="srcUrl" 
+            [alt]="'Kode QR Mesin ' + data.machine.machineName" 
+            class="dashboard-qr-image"
+          />
+        } @else {
+          <p style="color: red; text-align: center; padding: 1rem;">Gagal memuat QR Code</p>
+        }
+      </div>
+      <span class="dashboard-qr-label">Pindai Kode QR</span>
+    </div>
+
+  </div>
+
+</div>

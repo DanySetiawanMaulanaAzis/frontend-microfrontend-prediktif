@@ -17,6 +17,10 @@ const mfeConfig = withModuleFederationPlugin({
     './OperatorDashboardSelectedMachine': './src/app/components/operator-dashboard-selected-machine/operator-dashboard-selected-machine',
 
     './OperatorDashboardById': './src/app/components/operator-dashboard-by-id/operator-dashboard-by-id',
+
+    './TechnicianDashboard': './src/app/components/technician-dashboard/technician-dashboard',
+
+    './TechnicianDashboardById': './src/app/components/technician-dashboard-by-id/technician-dashboard-by-id',
   },
 
   shared: {

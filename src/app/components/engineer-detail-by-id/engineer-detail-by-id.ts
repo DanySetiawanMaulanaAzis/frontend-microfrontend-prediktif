@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MachineService } from '../../services/machine';
 import { Detailmachine } from '../../models/detailmachine';
 import { Subscription, interval } from 'rxjs';
+import { Createundermaintenancerequest } from '../../models/createundermaintenancerequest';
 
 @Component({
   selector: 'app-engineer-detail-by-id',
@@ -22,8 +23,12 @@ export class EngineerDetailById {
   qrImageUrl = signal<string | null>(null);
   isQrLoading = signal<boolean>(false);
   
+  showPreventiveModal = signal<boolean>(false);
+  isSubmitting = signal<boolean>(false);
+
   // Reference signal dari service
   activeOperationHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
+  activeDowntimeHoursSignal = signal<ReturnType<typeof signal<number>> | null>(null);
 
   constructor() {
     // Reactive Fetch: Berjalan setiap kali nilai `id()` berubah
@@ -35,17 +40,25 @@ export class EngineerDetailById {
     });
   }
 
-  // Formatting detik ke hh:mm:ss
-  formattedOperationHours = computed(() => {
-    const hoursSignal = this.activeOperationHoursSignal();
-    const total = hoursSignal ? hoursSignal() : 0;
-
-    const hours = Math.floor(total / 3600);
-    const minutes = Math.floor((total % 3600) / 60);
-    const seconds = total % 60;
+  private formatSeconds(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
     const pad = (num: number) => num.toString().padStart(2, '0');
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  }
+
+  // Live Formatted Signal untuk Jam Operasional
+  formattedOperationHours = computed(() => {
+    const hoursSignal = this.activeOperationHoursSignal();
+    return this.formatSeconds(hoursSignal ? hoursSignal() : 0);
+  });
+
+  // Live Formatted Signal untuk Jam Downtime
+  formattedDowntimeHours = computed(() => {
+    const downtimeSignal = this.activeDowntimeHoursSignal();
+    return this.formatSeconds(downtimeSignal ? downtimeSignal() : 0);
   });
 
   private fetchDetail(id: number): void {
@@ -54,20 +67,27 @@ export class EngineerDetailById {
     this.machineService.getMachineDetailById(id).subscribe({
       next: (data) => {
         this.machineDetail.set(data);
-        
-        // Ambil reference signal live dari service
-        const liveSignal = this.machineService.getOperationHoursSignal(
-          data.machineId, 
+
+        // Ambil reference signal live Operation Hours
+        const liveOpSignal = this.machineService.getOperationHoursSignal(
+          data.machineId,
           data.operationHours || 0
         );
-        this.activeOperationHoursSignal.set(liveSignal);
-        
+        this.activeOperationHoursSignal.set(liveOpSignal);
+
+        // Ambil reference signal live Downtime Hours
+        const liveDtSignal = this.machineService.getDowntimeHoursSignal(
+          data.machineId,
+          data.downtimeHours || 0
+        );
+        this.activeDowntimeHoursSignal.set(liveDtSignal);
+
         this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Gagal mengambil detail mesin', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -94,5 +114,45 @@ export class EngineerDetailById {
 
   closeQrModal(): void {
     this.showQrModal.set(false);
+  }
+
+  onCallTechnicianFromEngineer(): void {
+    this.showPreventiveModal.set(true);
+  }
+
+  submitPreventiveMaintenance(): void {
+    const currentMachine = this.machineDetail(); // Menggunakan signal detail mesin komponen Anda
+    
+    if (!currentMachine) {
+      console.error('Data mesin tidak ditemukan.');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+
+    const payload: Createundermaintenancerequest = {
+      machineId: currentMachine.machineId,
+      machineName: currentMachine.machineName,
+      maintenance: true,
+      eventId: 1
+    };
+
+    this.machineService.createUnderMaintenance(payload).subscribe({
+      next: (res) => {
+        console.log('Permintaan Preventive Maintenance berhasil dikirim:', res);
+        this.isSubmitting.set(false);
+        this.closePreventiveModal();
+        
+        // Opsional: tambahkan notifikasi sukses atau refresh data detail mesin jika diperlukan
+      },
+      error: (err) => {
+        console.error('Gagal membuat permintaan Preventive Maintenance:', err);
+        this.isSubmitting.set(false);
+      }
+    });
+  }
+
+  closePreventiveModal(): void {
+    this.showPreventiveModal.set(false);
   }
 }
