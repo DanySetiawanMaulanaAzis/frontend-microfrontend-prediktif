@@ -179,52 +179,29 @@
           </div>
 
           <!-- List Notifikasi: Grid 3 Row Menurun ke Bawah -->
+          <!-- List Notifikasi: Grid Row Menurun ke Bawah -->
           <div class="score-change-list">
-            <!-- Row 1 Notifikasi -->
-            <div class="score-change-item">
-              <span class="event-date">7 Aug</span>
-              <span class="event-desc">Downtime gangguan</span>
+
+            <!-- Looping Data Completed Maintenance -->
+            <div class="score-change-item" *ngFor="let item of completedList()">
+              <!-- Tanggal dinamis disesuaikan formatnya (contoh: 24 Aug) -->
+              <span class="event-date">{{ item.lastUpdate | date:'d MMM' }}</span>
+
+              <!-- Deskripsi/Action dari DB -->
+              <span class="event-desc">{{ item.action || 'Tidak ada catatan action' }}</span>
+
+              <!-- Event score dummy untuk sementara -->
               <span class="event-score">37% &rarr; 32%</span>
             </div>
 
-            <!-- Row 2 Notifikasi -->
-            <div class="score-change-item">
-              <span class="event-date">15 Jul</span>
-              <span class="event-desc">Gangguan</span>
-              <span class="event-score">47% &rarr; 37%</span>
+            <!-- Tampilan Fallback Jika Data Kosong -->
+            <div *ngIf="completedList().length === 0" class="score-change-item">
+              <span class="event-desc">Belum ada data titik perubahan skor.</span>
             </div>
 
-            <!-- Row 3 Notifikasi -->
-            <div class="score-change-item">
-              <span class="event-date">16 Apr</span>
-              <span class="event-desc">Mesin Rusak</span>
-              <span class="event-score">70% &rarr; 47%</span>
-            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-}
-
-<!-- Modal Component untuk Display QR Code -->
-@if (showQrModal()) {
-<div class="modal-overlay" (click)="closeQrModal()">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>QR Code Mesin</h3>
-      <button type="button" class="btn-close" (click)="closeQrModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      @if (isQrLoading()) {
-      <div class="loading-spinner">Memuat QR Code...</div>
-      } @else if (qrImageUrl()) {
-      <img [src]="qrImageUrl()" alt="QR Code Mesin" class="qr-image" />
-      <p class="qr-caption">{{ machineDetail()?.machineName }}</p>
-      } @else {
-      <p class="error-text">Gagal mengambil QR Code.</p>
-      }
     </div>
   </div>
 </div>
