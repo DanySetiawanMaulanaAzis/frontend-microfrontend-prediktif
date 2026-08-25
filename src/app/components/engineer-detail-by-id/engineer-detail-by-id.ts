@@ -1,13 +1,14 @@
 import { Component, inject, input, OnInit, OnDestroy, signal, effect, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MachineService } from '../../services/machine';
 import { Detailmachine } from '../../models/detailmachine';
+import { Completedmaintenance } from '../../models/completedmaintenance';
 import { Subscription, interval } from 'rxjs';
 import { Createundermaintenancerequest } from '../../models/createundermaintenancerequest';
 
 @Component({
   selector: 'app-engineer-detail-by-id',
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   templateUrl: './engineer-detail-by-id.html',
   styleUrl: './engineer-detail-by-id.css',
 })
@@ -16,6 +17,7 @@ export class EngineerDetailById {
 
   id = input.required<number>();
   machineDetail = signal<Detailmachine | null>(null)
+  completedList = signal<Completedmaintenance[]>([]);
   isLoading = signal<boolean>(false);
 
   // Modal QR State
@@ -88,6 +90,19 @@ export class EngineerDetailById {
         console.error('Gagal mengambil detail mesin', err);
         this.isLoading.set(false);
       },
+    });
+
+    // 2. Fetch Completed Maintenance
+    // Catatan: Jika memanggil by Machine ID atau by Maintenance ID, sesuaikan method service yang dipanggil
+    this.machineService.getCompletedMaintenanceById(id).subscribe({
+      next: (data) => {
+        // Jika data berbentuk objek tunggal, bungkus ke dalam array [data]
+        // Jika data sudah berbentuk array (Completedmaintenance[]), langsung gunakan data
+        this.completedList.set(Array.isArray(data) ? data : [data]);
+      },
+      error: (err) => {
+        console.error('Gagal mengambil completed maintenance', err);
+      }
     });
   }
 

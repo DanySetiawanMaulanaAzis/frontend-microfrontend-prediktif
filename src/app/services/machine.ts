@@ -8,6 +8,7 @@ import { Detailmachine } from '../models/detailmachine';
 import { Createundermaintenancerequest } from '../models/createundermaintenancerequest';
 import { Undermaintenance } from '../models/undermaintenance';
 import { Updateundermaintenancestatusrequest } from '../models/updateundermaintenancestatusrequest';
+import { Completedmaintenance } from '../models/completedmaintenance';
 
 @Injectable({
   providedIn: 'root',
@@ -217,6 +218,11 @@ export class MachineService {
   // GET: api/Machine/under-maintenance
   getUnderMaintenance(): Observable<Undermaintenance[]> {
     return this.http.get<Undermaintenance[]>(`${this.apiUrl}/Machine/under-maintenance`);
+  }
+
+  // Method baru untuk mengambil Completed Maintenance berdasarkan ID
+  getCompletedMaintenanceById(id: number): Observable<Completedmaintenance> {
+    return this.http.get<Completedmaintenance>(`${this.apiUrl}/Machine/completed-maintenance/machine-detail/history/${id}`);
   }
 
   // GET: api/Machine/under-maintenance/{id}
