@@ -9,6 +9,7 @@ import { Createundermaintenancerequest } from '../models/createundermaintenancer
 import { Undermaintenance } from '../models/undermaintenance';
 import { Updateundermaintenancestatusrequest } from '../models/updateundermaintenancestatusrequest';
 import { Completedmaintenance } from '../models/completedmaintenance';
+import { Machinepredictresponse } from '../models/machinepredictresponse';
 
 @Injectable({
   providedIn: 'root',
@@ -228,5 +229,10 @@ export class MachineService {
   // GET: api/Machine/under-maintenance/{id}
   getUnderMaintenanceById(id: number): Observable<Undermaintenance> {
     return this.http.get<Undermaintenance>(`${this.apiUrl}/Machine/under-maintenance/${id}`);
+  }
+
+  // GET: api/Machine/predict/{machineDetailId}
+  getMachinePrediction(machineDetailId: number): Observable<Machinepredictresponse> {
+    return this.http.get<Machinepredictresponse>(`${this.apiUrl}/Machine/predict/${machineDetailId}`);
   }
 }
