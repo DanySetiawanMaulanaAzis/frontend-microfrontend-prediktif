@@ -28,7 +28,7 @@
             "styles": ["src/styles.css"],
             "main": "src/main.ts",
             "outputPath": "dist/smart_tablev1",
-            "index": "src\\index.html",
+            "index": "src/index.html",
             "extraWebpackConfig": "webpack.config.js",
             "commonChunk": false
           },
