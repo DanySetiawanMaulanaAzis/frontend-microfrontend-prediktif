@@ -45,7 +45,17 @@
                     <td>{{ machine.machineName }}</td>
                     <td>{{ machine.location }}</td>
                     <td>{{ machine.ahs }}</td>
-                    <td>{{ machine.statusName }}</td>
+                    <td>
+                        <!-- Update bagian ini: tambahkan span badge dan ngClass -->
+                        <span class="status-badge" [ngClass]="{
+                                'status-routine': machine.statusName.toLowerCase() === 'routine',
+                                'status-minor': machine.statusName.toLowerCase() === 'minor',
+                                'status-major': machine.statusName.toLowerCase() === 'major',
+                                'status-critical': machine.statusName.toLowerCase() === 'critical'
+                              }">
+                            {{ machine.statusName }}
+                        </span>
+                    </td>
                     <td>{{ machine.lastUpdate | date:'dd MMM yyyy' }}</td>
                     <td>
                         <button [routerLink]="['/add-machine', machine.id]" class="action-btn">

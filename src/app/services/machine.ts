@@ -10,6 +10,8 @@ import { Undermaintenance } from '../models/undermaintenance';
 import { Updateundermaintenancestatusrequest } from '../models/updateundermaintenancestatusrequest';
 import { Completedmaintenance } from '../models/completedmaintenance';
 import { Machinepredictresponse } from '../models/machinepredictresponse';
+import { Smartprioritization } from '../models/smartprioritization';
+import { Smartprioritizationsummary } from '../models/smartprioritizationsummary';
 
 @Injectable({
   providedIn: 'root',
@@ -234,5 +236,15 @@ export class MachineService {
   // GET: api/Machine/predict/{machineDetailId}
   getMachinePrediction(machineDetailId: number): Observable<Machinepredictresponse> {
     return this.http.get<Machinepredictresponse>(`${this.apiUrl}/Machine/predict/${machineDetailId}`);
+  }
+
+  // GET: api/Machine/completed-maintenance/history/smart-prioritization
+  getCompletedMaintenanceSmartPrioritization(): Observable<Smartprioritization[]> {
+    return this.http.get<Smartprioritization[]>(`${this.apiUrl}/Machine/completed-maintenance/history/smart-prioritization`);
+  }
+
+  // GET: api/Machine/completed-maintenance/machine-detail/history/smart-prioritization/summary
+  getCompletedMaintenanceSummary(): Observable<Smartprioritizationsummary> {
+    return this.http.get<Smartprioritizationsummary>(`${this.apiUrl}/Machine/completed-maintenance/machine-detail/history/smart-prioritization/summary`);
   }
 }

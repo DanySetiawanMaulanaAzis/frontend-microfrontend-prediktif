@@ -1,56 +1,103 @@
 <div class="smart-prioritization-container">
+  <!-- Summary Cards Overall (Luar Card Putih) -->
+  <div class="dashboard-overall">
+    <div class="dashboard-summary summary-total">
+      <div class="card-row card-header">Total Aset</div>
+      <div class="card-row card-body">{{ summary()?.totalMachines ?? 0 }}</div>
+      <div class="card-row card-footer">Jumlah seluruh aset terpantau</div>
+    </div>
 
-  <!-- Header -->
-  <div class="table-header">
-    <h2 class="title">Smart Prioritization</h2>
+    <div class="dashboard-summary summary-critical">
+      <div class="card-row card-header">Kritis</div>
+      <div class="card-row card-body">{{ summary()?.critical ?? 0 }}</div>
+      <div class="card-row card-footer">0% - 39%</div>
+    </div>
 
-    <div class="line-filter">
-      <button class="line-btn active">Semua Lini</button>
-      <button class="line-btn">Lini A</button>
-      <button class="line-btn">Lini B</button>
-      <button class="line-btn">Lini C</button>
+    <div class="dashboard-summary summary-major">
+      <div class="card-row card-header">Mayor</div>
+      <div class="card-row card-body">{{ summary()?.major ?? 0 }}</div>
+      <div class="card-row card-footer">40% - 59%</div>
+    </div>
+
+    <div class="dashboard-summary summary-minor">
+      <div class="card-row card-header">Minor</div>
+      <div class="card-row card-body">{{ summary()?.minor ?? 0 }}</div>
+      <div class="card-row card-footer">60% - 79%</div>
+    </div>
+
+    <div class="dashboard-summary summary-routine">
+      <div class="card-row card-header">Rutin</div>
+      <div class="card-row card-body">{{ summary()?.routine ?? 0 }}</div>
+      <div class="card-row card-footer">80% - 100%</div>
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="table-wrapper">
-    <table class="smart-table">
+  <!-- Table Container (Pembungkus Putih) -->
+  <div class="table-container">
+    <div class="table-header">
+      <h2 class="title">Smart Prioritization</h2>
 
-      <thead>
-        <tr>
-          <th>Mesin</th>
-          <th>AHS</th>
-          <th>Tren 30 Hari</th>
-          <th>Inspeksi Terakhir</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
+      <div class="line-filter">
+        <button class="line-btn active">Semua Lini</button>
+        <button class="line-btn">Lini A</button>
+        <button class="line-btn">Lini B</button>
+        <button class="line-btn">Lini C</button>
+      </div>
+    </div>
 
-      <tbody>
-        <!-- Dummy Data -->
-        <tr>
-          <td>Machine 01</td>
-          <td>83%</td>
-          <td>-</td>
-          <td>24 Jul 2026</td>
-          <td>
-            <button class="action-btn">Detail</button>
-          </td>
-        </tr>
+    <div class="table-wrapper">
+      <table class="smart-table">
+        <thead>
+          <tr>
+            <th>Mesin</th>
+            <th>AHS</th>
+            <th>Tren 30 Hari</th>
+            <th>Inspeksi Terakhir</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of smartPrioritizations(); track item.id) {
+          <tr>
+            <td>{{ item.machineName }}</td>
+            <td>{{ item.ahs != null ? item.ahs + '%' : '-' }}</td>
 
-        <tr>
-          <td>Machine 02</td>
-          <td>78%</td>
-          <td>-</td>
-          <td>22 Jul 2026</td>
-          <td>
-            <button class="action-btn">Detail</button>
-          </td>
-        </tr>
+            <td>
+              @if (item.has30DaysHistory && item.diff30Days != null) {
+              <span [ngClass]="{
+                  'trend-positive': item.diff30Days > 0,
+                  'trend-negative': item.diff30Days < 0,
+                  'trend-neutral': item.diff30Days === 0
+                }">
+                {{ item.diff30Days > 0 ? '+' : '' }}{{ item.diff30Days }}%
+              </span>
+              } @else {
+              <span class="trend-empty">-</span>
+              }
+            </td>
 
-      </tbody>
+            <td>
+              {{ item.lastUpdate | date:'dd MMM yyyy' }}
+              @if (item.userName) {
+              <span class="inspector-name">• {{ item.userName }}</span>
+              }
+            </td>
 
-    </table>
+            <td>
+              <button [routerLink]="['/add-machine', item.id]" class="action-btn">
+                Detail
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px;">
+              Tidak ada data smart prioritization.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
-
 </div>
