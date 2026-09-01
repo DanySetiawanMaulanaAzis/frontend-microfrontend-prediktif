@@ -20,6 +20,21 @@ export class EngineerDetailById {
   completedList = signal<Completedmaintenance[]>([]);
   isLoading = signal<boolean>(false);
 
+  // --- Pagination State ---
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(3); // Batas 3 item per halaman
+
+  // Total Halaman
+  totalPages = computed(() => {
+    return Math.ceil(this.completedList().length / this.pageSize()) || 1;
+  });
+
+  // Signal berisi 3 item terpotong untuk ditampilkan di halaman aktif
+  paginatedCompletedList = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.pageSize();
+    return this.completedList().slice(startIndex, startIndex + this.pageSize());
+  });
+
   // Modal QR State
   showQrModal = signal<boolean>(false);
   qrImageUrl = signal<string | null>(null);
@@ -40,6 +55,19 @@ export class EngineerDetailById {
         this.fetchDetail(machineId);
       }
     });
+  }
+
+  // --- Navigasi Pagination ---
+  nextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update((page) => page + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.update((page) => page - 1);
+    }
   }
 
   private formatSeconds(totalSeconds: number): string {
@@ -91,14 +119,11 @@ export class EngineerDetailById {
         this.isLoading.set(false);
       },
     });
-
-    // 2. Fetch Completed Maintenance
-    // Catatan: Jika memanggil by Machine ID atau by Maintenance ID, sesuaikan method service yang dipanggil
     this.machineService.getCompletedMaintenanceById(id).subscribe({
       next: (data) => {
-        // Jika data berbentuk objek tunggal, bungkus ke dalam array [data]
-        // Jika data sudah berbentuk array (Completedmaintenance[]), langsung gunakan data
-        this.completedList.set(Array.isArray(data) ? data : [data]);
+        const list = Array.isArray(data) ? data : [data];
+        this.completedList.set(list);
+        this.currentPage.set(1);
       },
       error: (err) => {
         console.error('Gagal mengambil completed maintenance', err);
@@ -169,5 +194,59 @@ export class EngineerDetailById {
 
   closePreventiveModal(): void {
     this.showPreventiveModal.set(false);
+  }
+
+  getAhsChangeText(item: Completedmaintenance): string {
+    const list = this.completedList();
+    const originalIndex = list.indexOf(item);
+    if (originalIndex === -1) return '-';
+
+    const currentItem = list[originalIndex];
+    const previousItem = list[originalIndex + 1];
+
+    const currentAhs = currentItem?.ahs;
+    const previousAhs = previousItem?.ahs;
+
+    if (currentAhs === null || currentAhs === undefined) {
+      return '-';
+    }
+
+    const formattedCurrent = `${currentAhs}%`;
+
+    if (previousAhs === null || previousAhs === undefined) {
+      return formattedCurrent;
+    }
+
+    return `${previousAhs}% \u2192 ${formattedCurrent}`;
+  }
+
+  getAhsScoreClass(item: Completedmaintenance): string {
+    const currentAhs = item?.ahs;
+
+    if (currentAhs === null || currentAhs === undefined) {
+      return 'score-empty';
+    }
+
+    if (currentAhs >= 80) {
+      return 'score-routine';
+    } else if (currentAhs >= 60) {
+      return 'score-major';
+    } else if (currentAhs >= 40) {
+      return 'score-minor';
+    } else {
+      return 'score-critical';
+    }
+  }
+
+  // Format teks diff langsung menggunakan angka bulat dari backend
+  getFormattedDiff(diff: number | null | undefined): string {
+    if (diff === null || diff === undefined) return '0%';
+    return `${diff > 0 ? '+' : ''}${diff}%`;
+  }
+
+  // Menentukan class CSS berdasarkan positif/negatif
+  getDiffClass(diff: number | null | undefined): string {
+    if (diff === null || diff === undefined) return 'neutral';
+    return diff >= 0 ? 'positive' : 'negative';
   }
 }

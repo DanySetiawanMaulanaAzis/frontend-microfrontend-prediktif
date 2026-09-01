@@ -10,14 +10,16 @@ export interface Detailmachine {
   statusId: number;
   statusName: string;
   actionId?: number;
+  current7Days?: number;
   last7Days?: number;
+  diff7Days?: number;
+  current30Days?: number;
   last30Days?: number;
+  diff30Days?: number;
+  current90Days?: number;
   last90Days?: number;
+  diff90Days?: number;
   firstUpdate: string;
   lastUpdate: string;
-  
-  // Property selisih dari backend
-  diff7Days?: number;
-  diff30Days?: number;
-  diff90Days?: number;
+  daysSinceLastService: number | null;
 }

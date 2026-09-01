@@ -155,7 +155,7 @@
 /* --- Seksi Titik Perubahan Skor (Card 2 Bottom Section) --- */
 
 .score-change-section {
-    @apply flex flex-col gap-2 border-t border-gray-100 pt-3;
+    @apply grid grid-rows-[auto_1fr_auto] gap-2 border-t border-gray-100 pt-3;
 }
 
 .score-change-header h4 {
@@ -165,6 +165,16 @@
 /* List notifikasi 3 row menurun ke bawah */
 .score-change-list {
     @apply grid grid-rows-3 gap-2;
+}
+
+/* Row ke-3: Container Pagination */
+.score-change-pagination {
+    @apply flex items-center justify-between pt-1 text-xs text-gray-500;
+}
+
+/* Styling tombol navigasi pagination */
+.pagination-btn {
+    @apply inline-flex items-center justify-center rounded border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40;
 }
 
 /* Item notifikasi individual (per baris) */
@@ -181,7 +191,28 @@
 }
 
 .event-score {
-    @apply font-semibold text-red-600 whitespace-nowrap;
+    @apply whitespace-nowrap;
+}
+
+/* --- Text Color untuk Event Score --- */
+.score-routine {
+    @apply text-green-600 font-semibold;
+}
+
+.score-major {
+    @apply text-amber-600 font-semibold;
+}
+
+.score-minor {
+    @apply text-yellow-600 font-semibold;
+}
+
+.score-critical {
+    @apply text-red-600 font-semibold;
+}
+
+.score-empty {
+    @apply text-gray-400;
 }
 
 /* Card Base Styling */
@@ -326,4 +357,19 @@
 .error-text {
   color: #dc2626;
   font-size: 0.875rem;
+}
+
+.trend-delta.positive {
+  color: #10b981; /* Warna hijau untuk nilai positif atau 0 */
+  font-weight: 600;
+}
+
+.trend-delta.negative {
+  color: #ef4444; /* Warna merah untuk nilai minus */
+  font-weight: 600;
+}
+
+.trend-delta.neutral {
+  color: #6b7280; /* Warna netral jika bernilai null/undefined */
+  font-weight: 600;
 }

@@ -132,7 +132,7 @@
             </div>
             <div class="info-box">
               <span class="box-label">Hari Sejak Servis</span>
-              <span class="box-value">30 Hari</span>
+              <span class="box-value">{{ detail.daysSinceLastService }}</span>
             </div>
           </div>
         </div>
@@ -151,54 +151,61 @@
             <!-- Column 1: 7 Hari Terakhir -->
             <div class="trend-column">
               <div class="trend-header">7 Hari Terakhir</div>
-              <div class="trend-delta negative">-5</div>
-              <div class="trend-range">37% &rarr; 32%</div>
+              <div class="trend-delta" [ngClass]="getDiffClass(detail.diff7Days)">{{ getFormattedDiff(detail.diff7Days) }}</div>
+              <div class="trend-range">{{ detail.current7Days }}% &rarr;  {{ detail.last7Days }}%</div>
             </div>
 
             <!-- Column 2: 30 Hari Terakhir -->
             <div class="trend-column">
               <div class="trend-header">30 Hari Terakhir</div>
-              <div class="trend-delta negative">-15</div>
-              <div class="trend-range">47% &rarr; 32%</div>
+              <div class="trend-delta" [ngClass]="getDiffClass(detail.diff30Days)">{{ getFormattedDiff(detail.diff30Days) }}</div>
+              <div class="trend-range">{{ detail.current30Days }}% &rarr; {{ detail.last30Days }}%</div>
             </div>
 
             <!-- Column 3: 90 Hari Terakhir -->
             <div class="trend-column">
               <div class="trend-header">90 Hari Terakhir</div>
-              <div class="trend-delta negative">-42</div>
-              <div class="trend-range">74% &rarr; 32%</div>
+              <div class="trend-delta" [ngClass]="getDiffClass(detail.diff90Days)">{{ getFormattedDiff(detail.diff90Days) }}</div>
+              <div class="trend-range">{{ detail.current90Days }}% &rarr; {{ detail.last90Days }}%</div>
             </div>
           </div>
         </div>
 
         <!-- Inner Row 3: Seksi Titik Perubahan Skor -->
         <div class="score-change-section">
-          <!-- Sub-Header Row -->
+          <!-- Row 1: Sub-Header -->
           <div class="score-change-header">
             <h4>Titik Perubahan Skor</h4>
           </div>
 
-          <!-- List Notifikasi: Grid 3 Row Menurun ke Bawah -->
-          <!-- List Notifikasi: Grid Row Menurun ke Bawah -->
+          <!-- Row 2: List Data (Maksimal 3 item per halaman) -->
           <div class="score-change-list">
-
-            <!-- Looping Data Completed Maintenance -->
-            <div class="score-change-item" *ngFor="let item of completedList()">
-              <!-- Tanggal dinamis disesuaikan formatnya (contoh: 24 Aug) -->
-              <span class="event-date">{{ item.lastUpdate | date:'d MMM' }}</span>
-
-              <!-- Deskripsi/Action dari DB -->
+            <div class="score-change-item" *ngFor="let item of paginatedCompletedList()">
+              <span class="event-date">{{ item.lastUpdate ? (item.lastUpdate | date:'d MMM') : '-' }}</span>
               <span class="event-desc">{{ item.action || 'Tidak ada catatan action' }}</span>
-
-              <!-- Event score dummy untuk sementara -->
-              <span class="event-score">37% &rarr; 32%</span>
+              <span class="event-score" [ngClass]="getAhsScoreClass(item)">{{ getAhsChangeText(item) }}</span>
             </div>
 
-            <!-- Tampilan Fallback Jika Data Kosong -->
+            <!-- Fallback Jika Data Kosong -->
             <div *ngIf="completedList().length === 0" class="score-change-item">
               <span class="event-desc">Belum ada data titik perubahan skor.</span>
             </div>
+          </div>
 
+          <!-- Row 3: Pagination -->
+          <div class="score-change-pagination">
+            <span class="pagination-info">
+              Halaman {{ currentPage() }} dari {{ totalPages() }} (Total {{ completedList().length }} data)
+            </span>
+            <div class="flex items-center gap-1">
+              <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage() === 1">
+                &larr; Prev
+              </button>
+              <button class="pagination-btn" (click)="nextPage()"
+                [disabled]="currentPage() === totalPages() || completedList().length === 0">
+                Next &rarr;
+              </button>
+            </div>
           </div>
         </div>
       </div>

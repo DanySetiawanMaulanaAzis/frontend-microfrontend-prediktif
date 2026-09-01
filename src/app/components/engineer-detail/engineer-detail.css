@@ -147,3 +147,38 @@
 .action-btn:hover {
     background: #1d4ed8;
 }
+
+
+/* --- Status Badges Styling --- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.125rem 0.625rem; /* py-0.5 px-2.5 */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 600; /* font-semibold */
+}
+
+.status-routine {
+  background-color: #dcfce7; /* bg-green-100 */
+  color: #166534; /* text-green-800 */
+  border: 1px solid #bbf7d0; /* border-green-200 */
+}
+
+.status-minor {
+  background-color: #fef9c3; /* bg-yellow-100 */
+  color: #854d0e; /* text-yellow-800 */
+  border: 1px solid #fef08a; /* border-yellow-200 */
+}
+
+.status-major {
+  background-color: #ffedd5; /* bg-orange-100 */
+  color: #9a3412; /* text-orange-800 */
+  border: 1px solid #fed7aa; /* border-orange-200 */
+}
+
+.status-critical {
+  background-color: #fee2e2; /* bg-red-100 */
+  color: #991b1b; /* text-red-800 */
+  border: 1px solid #fecaca; /* border-red-200 */
+}

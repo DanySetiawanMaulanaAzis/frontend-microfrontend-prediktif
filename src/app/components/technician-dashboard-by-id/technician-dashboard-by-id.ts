@@ -89,6 +89,22 @@ export class TechnicianDashboardById implements OnInit {
     });
   }
 
+  // Helper untuk mengubah nama severity menjadi status_id (1-4)
+  private mapSeverityToStatusId(severity: string): number {
+    switch (severity?.trim().toLowerCase()) {
+      case 'critical':
+        return 1;
+      case 'major':
+        return 2;
+      case 'minor':
+        return 3;
+      case 'routine':
+        return 4;
+      default:
+        return 4; // Default ke Routine jika tidak dikenali
+    }
+  }
+
   onSubmitEvaluation(): void {
     const detail = this.machineDetail();
     if (!detail) {
@@ -96,36 +112,47 @@ export class TechnicianDashboardById implements OnInit {
       return;
     }
 
-    // 1. Ambil data user dari localStorage
-    const userStorage = localStorage.getItem('user'); // Ganti 'user' jika key localStorage Anda berbeda
+    const userStorage = localStorage.getItem('user');
     if (!userStorage) {
       alert('Sesi pengguna tidak ditemukan. Silakan login kembali.');
       return;
     }
 
     const userData = JSON.parse(userStorage);
-
-    // 2. Susun payload API
-    const payload: Updateundermaintenancestatusrequest = {
-      userId: userData.userId,
-      name: userData.name,
-      action: this.notes().trim() || 'Maintenance Completed'
-    };
-
     this.isSubmitting.set(true);
 
-    // 3. Panggil API completeUnderMaintenance menggunakan ID dari record undermaintenance (detail.id)
-    this.machineService.completeUnderMaintenance(detail.id, payload).subscribe({
-      next: (res) => {
-        this.isSubmitting.set(false);
-        alert('Penilaian berhasil dikirim dan status maintenance telah diselesaikan.');
-        
-        // Navigasi kembali ke dashboard teknisi setelah sukses
-        this.router.navigate(['/technician']);
+    // Langkah 1: Dapatkan Prediksi AI terlebih dahulu
+    this.machineService.getMachinePrediction(detail.machineDetailId).subscribe({
+      next: (prediction) => {
+        // Map severity string ke integer status_id
+        const statusId = this.mapSeverityToStatusId(prediction.severity);
+
+        // Langkah 2: Susun Payload lengkap dengan data dari AI (ahs & statusId)
+        const payload: Updateundermaintenancestatusrequest = {
+          userId: userData.userId,
+          name: userData.name,
+          action: this.notes().trim() || 'Maintenance Completed',
+          ahs: prediction.healthScore, // Mengisi kolom [ahs]
+          statusId: statusId           // Mengisi kolom [status_id]
+        };
+
+        // Langkah 3: Selesaikan maintenance dan simpan ke database
+        this.machineService.completeUnderMaintenance(detail.id, payload).subscribe({
+          next: () => {
+            this.isSubmitting.set(false);
+            alert('Penilaian berhasil dikirim, nilai AHS dan status prediksi berhasil disimpan.');
+            this.router.navigate(['/technician']);
+          },
+          error: (err) => {
+            console.error('Gagal menyelesaikan maintenance:', err);
+            alert('Gagal menyimpan hasil penilaian.');
+            this.isSubmitting.set(false);
+          }
+        });
       },
       error: (err) => {
-        console.error('Gagal menyelesaikan maintenance:', err);
-        alert('Gagal mengirim penilaian. Silakan coba lagi.');
+        console.error('Gagal mendapatkan prediksi dari AI:', err);
+        alert('Gagal memproses prediksi AI. Silakan coba beberapa saat lagi.');
         this.isSubmitting.set(false);
       }
     });
