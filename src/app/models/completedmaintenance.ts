@@ -6,7 +6,7 @@ export interface Completedmaintenance {
   lastUpdate: string | Date;
   machineDetailId: number;
   location: string;
-  ahs?: number;
+  ahs: number | null
   eventId: number | null;
   event: string | null;
   maintenanceType: string | null;
