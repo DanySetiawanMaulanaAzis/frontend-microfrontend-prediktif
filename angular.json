@@ -28,7 +28,7 @@
             "styles": ["src/styles.css"],
             "main": "src/main.ts",
             "outputPath": "dist/smart_tablev1",
-            "index": "src\\index.html",
+            "index": "src/index.html",
             "extraWebpackConfig": "webpack.config.js",
             "commonChunk": false
           },
@@ -67,13 +67,13 @@
           "builder": "ngx-build-plus:dev-server",
           "options": {
             "port": 4300,
-            "host": "localhost",
+            "host": "0.0.0.0",
+            "disableHostCheck": true,
             "headers": {
               "Access-Control-Allow-Origin": "*",
               "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
               "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
             },
-            "publicHost": "http://localhost:4300",
             "extraWebpackConfig": "webpack.config.js"
           },
           "configurations": {
