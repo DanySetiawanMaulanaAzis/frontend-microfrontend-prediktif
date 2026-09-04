@@ -55,6 +55,41 @@
     @apply flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm;
 }
 
+
+/* Progress Bar Style untuk Kolom AHS (Sejajar Kesamping) */
+.ahs-cell {
+  @apply flex flex-row items-center gap-3 min-w-[160px];
+}
+
+.ahs-value {
+  @apply text-sm font-semibold text-gray-700 min-w-[40px] text-right;
+}
+
+.progress-bar-container {
+  @apply flex-1 h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full transition-all duration-300 rounded-full;
+}
+
+/* Warna Dinamis Berdasarkan Tingkat AHS */
+.bg-critical {
+  @apply bg-red-500;
+}
+
+.bg-major {
+  @apply bg-orange-500;
+}
+
+.bg-minor {
+  @apply bg-yellow-400;
+}
+
+.bg-routine {
+  @apply bg-green-500;
+}
+
 .table-header {
     display: flex;
     justify-content: space-between;
